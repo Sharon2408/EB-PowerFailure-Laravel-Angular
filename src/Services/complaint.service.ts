@@ -10,22 +10,22 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class ComplaintService {
-
   constructor(private http: HttpClient, private alert: MessageService, private router: Router) { }
   baseUrl = environment.baseUrl;
 
+  // To get all districts
   getDistrict() {
     return this.http.get<District[]>(`${this.baseUrl}/district`);
   }
-
+// To get all zones
   getZone() {
     return this.http.get<Zone[]>(`${this.baseUrl}/zone`);
   }
-
+// To get all areas
   getArea() {
     return this.http.get<Area[]>(`${this.baseUrl}/area`);
   }
-
+// To store the user registered complaint at the backend()
   postComplaint(form: Complaint) {
     console.log(form)
     return this.http.post<Complaint[]>(`${this.baseUrl}/usercomplaints`, form).subscribe({
@@ -37,31 +37,10 @@ export class ComplaintService {
           summary: 'Thank you',
           detail: 'Your Complaint has been registerd'
         });
-        setTimeout(() => {
-          this.router.navigate(['/']);
-        }, 1000)
-
+        this.router.navigate(['user-complaints']);
       },
-      error: (error) => {
-        if (error.status === 404) {
-        this.alert.add({
-          key: 'tc',
-          severity: 'error',
-          summary: 'Consumer Id',
-          detail: 'Consumer Id doesnt match'
-        });
-      }
-      else{
-        this.alert.add({
-          key: 'tc',
-          severity: 'error',
-          summary: 'Oops',
-          detail: 'Something went wrong'
-        });
-      }
-    }
     });
   }
 
- 
+
 }

@@ -11,7 +11,6 @@ export const adminGuardGuard: CanActivateFn = (route, state) => {
       if(token && decode.role_id == 1){
         return true;
       }
-    
   }
   else{
   return false;

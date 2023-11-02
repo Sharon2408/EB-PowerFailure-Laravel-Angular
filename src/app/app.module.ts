@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 
 // Components
@@ -42,6 +42,8 @@ import { LinemanViewTaskComponent } from './lineman-components/lineman-view-task
 import { UpdateStatusRendererComponent } from './lineman-components/update-status-renderer/update-status-renderer.component';
 import { DatePipe } from '@angular/common';
 import { UserRegisteredComplaintsComponent } from './user-components/user-registered-complaints/user-registered-complaints.component';
+import {  HttpInterceptors } from 'src/Interceptors/http.interceptor';
+
 
 
 
@@ -51,7 +53,7 @@ import { UserRegisteredComplaintsComponent } from './user-components/user-regist
     SignupComponent,
     NavbarComponent,
     LoginComponent,
-     ComplaintsComponent,
+    ComplaintsComponent,
     IndexComponent,
     AdminViewComplaintsComponent,
     AssignbuttonComponent,
@@ -61,7 +63,6 @@ import { UserRegisteredComplaintsComponent } from './user-components/user-regist
     LinemanViewTaskComponent,
     UpdateStatusRendererComponent,
     UserRegisteredComplaintsComponent,
-
   ],
   imports: [
     BrowserModule,
@@ -81,7 +82,14 @@ import { UserRegisteredComplaintsComponent } from './user-components/user-regist
     ToastModule,
     AgGridModule
   ],
-  providers: [MessageService,DatePipe],
+  providers: [
+    MessageService, DatePipe,
+    {
+      provide:HTTP_INTERCEPTORS,
+      useClass:HttpInterceptors,
+      multi:true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

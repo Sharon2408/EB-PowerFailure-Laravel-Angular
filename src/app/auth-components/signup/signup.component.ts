@@ -96,7 +96,7 @@ export class SignupComponent implements OnInit {
       name: this.name,
       email: this.email,
       password: this.password,
-      confirm_password: this.confirm_password,
+      confirmpassword: this.confirm_password,
       phoneno: this.phoneno,
       connectionNumber:this.connectionNumber
       

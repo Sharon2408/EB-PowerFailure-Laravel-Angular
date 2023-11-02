@@ -5,7 +5,7 @@ import { LoginComponent } from './auth-components/login/login.component';
 import { ComplaintsComponent } from './user-components/user-complaints-register/complaints.component';
 import { IndexComponent } from './index/index.component';
 import { userGuardGuard} from 'src/Guards/user.guard';
-import { linemenGuardGuard } from 'src/Guards/linemen.guard';
+import { linemenGuard } from 'src/Guards/linemen.guard';
 import { adminGuardGuard } from 'src/Guards/admin.guard';
 import { AdminViewComplaintsComponent } from './admin-components/admin-view-complaints/admin-view-complaints.component';
 import { RegisterLinemanComponent } from './admin-components/register-lineman/register-lineman.component';
@@ -36,7 +36,7 @@ const routes: Routes = [
     path: 'area-lineman/:lineman_id', component: ViewAreaLinemanComponent
   },
   {
-    path: 'lineman-view-task', component: LinemanViewTaskComponent,canActivate:[linemenGuardGuard]
+    path: 'lineman-view-task', component: LinemanViewTaskComponent,canActivate:[linemenGuard]
   },
   {
     path:'user-complaints',component:UserRegisteredComplaintsComponent,canActivate:[userGuardGuard]

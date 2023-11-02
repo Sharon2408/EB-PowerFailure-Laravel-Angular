@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 import { LinemanService } from 'src/Services/lineman.service';
 import { UpdateStatusRendererComponent } from '../update-status-renderer/update-status-renderer.component';
 import { DatePipe } from '@angular/common';
+import { RegistrationService } from 'src/Services/registration.service';
 
 @Component({
   selector: 'app-lineman-view-task',
@@ -14,7 +15,7 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./lineman-view-task.component.css']
 })
 export class LinemanViewTaskComponent {
-  constructor(private http: HttpClient, private lineman: LinemanService, private datePipe: DatePipe) { }
+  constructor(private http: HttpClient, private register: RegistrationService, private datePipe: DatePipe) { }
   lineman_id!: number;
   rowData$!: Observable<LinemanViewTask[]>;
   public domLayout: DomLayoutType = 'autoHeight';
@@ -70,14 +71,7 @@ export class LinemanViewTaskComponent {
   };
 
   getTasksLineman() {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const decryptToken = token.split('.')[1];
-      const decode = JSON.parse(atob(decryptToken));
-      if (decode) {
-        this.lineman_id = decode.sub;
-      }
-    }
+    this.lineman_id = this.register.userId;
     this.rowData$ =
       this.http.get<LinemanViewTask[]>(`${this.baseUrl}/view-lineman-tasks/` + this.lineman_id)
 

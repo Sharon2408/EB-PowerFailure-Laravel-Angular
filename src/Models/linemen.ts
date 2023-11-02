@@ -1,3 +1,4 @@
+// Response types for linemen Details
 export interface Linemen {
     id: number;
     lineman_id: string;
@@ -11,12 +12,12 @@ export interface Linemen {
     created_at: string;
     updated_at: string
 }
-
+// Responsetype of Task
 export interface Task {
     complaint_id: number;
     lineman_id: number;
 }
-
+// Responsetype of Tasks assigned to Lineman
 export interface LinemanViewTask {
     id: number;
     user_id: number;
@@ -33,12 +34,12 @@ export interface LinemanViewTask {
     complaint_id: number;
     lineman_id: number
 }
-
+// Response type of status
 export interface status {
     id: number;
     status_name: string;
 }
-
+// Response type of Updatestatus
 export interface Updatestatus {
     complaint_id: number;
     task_id: number;

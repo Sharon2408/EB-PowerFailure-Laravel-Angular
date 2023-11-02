@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { BehaviorSubject,} from 'rxjs';
+import { BehaviorSubject, } from 'rxjs';
 import { Linemen, Task, Updatestatus, status, } from 'src/Models/linemen';
 import { Registration } from 'src/Models/registration';
 import { environment } from 'src/environments/environment';
@@ -11,15 +11,16 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class LinemanService {
-  
-
   constructor(private http: HttpClient, private alert: MessageService, private router: Router) { }
+  // The base url of the Api
   baseUrl = environment.baseUrl;
+
+  // Behavior Subject to get the current complaintId
   complaint_id = new BehaviorSubject<number>(0);
   currentComplaintId = this.complaint_id.asObservable();
-
+  
+  // Lineman Registration
   linemanRegistration(form: Registration) {
-
     return this.http.post<Registration[]>(`${this.baseUrl}/lineman-register`, form).subscribe(
       {
         next: () => {
@@ -28,66 +29,52 @@ export class LinemanService {
             severity: 'success',
             summary: 'lineman registered Successfully',
           });
-          setTimeout(() => {
-            this.router.navigate(['/'])
-          }, 500);
+          this.router.navigate(['admin-view-complaints']);
         },
-        error: (error) => {
-       console.log(error);
-          if (error.status === 422) { 
-            this.alert.add({
-              key: 'tc',
-              severity: 'error',
-              summary: 'Email exists',
-              detail: 'Looks like you have already registered',
-            });
-
-            setTimeout(() => {
-              this.router.navigate(['login'])
-            }, 1000)
-          }
-          else {
-            this.alert.add({
-              key: 'tc',
-              severity: 'error',
-              summary: 'Server error',
-              detail: 'please try again later',
-            });
-          }
-        }
       }
     );
-
   }
 
+  // To find the lineman area wise
   find(lineman_id: string) {
     const id = lineman_id.substring(0, 9)
     return this.http.get<Linemen[]>(`${this.baseUrl}/lineman/` + id);
   }
 
+  // To assign the task to Lineman
   assignTasktoLineman(task: Task) {
     return this.http.post<Task>(`${this.baseUrl}/assign-task`, task).subscribe({
-      next: (res) => {},
-      error: (error) => {}
+      next: () => {
+        this.alert.add({
+          key: 'tc',
+          severity: 'success',
+          summary: 'Task Assigned',
+        });
+      }
     });
   }
 
-getStatus(){
-  return this.http.get<status[]>(`${this.baseUrl}/get-status`)
-}
+  // To get the status of the complaints assigned
+  getStatus() {
+    return this.http.get<status[]>(`${this.baseUrl}/get-status`)
+  }
 
-updateStatus(status:Updatestatus){
-  return this.http.patch(`${this.baseUrl}/update-status`,status).subscribe({
-    next: () =>{},
-    error: ()=>{}
-  });
-}
-
-updateSolvedDate(status:Updatestatus){
-return this.http.put(`${this.baseUrl}/solved-date`,status).subscribe({
-  next: () =>{},
-  error: ()=>{}
-})
-}
+// To update the status of the task assigned to the lineman
+  updateStatus(status: Updatestatus) {
+    return this.http.patch(`${this.baseUrl}/update-status`, status).subscribe({
+      next: () => {
+        this.alert.add({
+          key: 'tc',
+          severity: 'success',
+          summary: 'Status Updated',
+        });
+      }
+    });
+  }
+  
+// To give the completed date when the status is updated to completed
+  updateSolvedDate(status: Updatestatus) {
+    return this.http.put(`${this.baseUrl}/solved-date`, status).subscribe()
+  }
 
 }

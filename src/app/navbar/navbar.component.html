@@ -1,3 +1,4 @@
+<p-toast position="top-center" key="tc"></p-toast>
 <nav class="navbar navbar-expand-md navbar-light bg-primary shadow-sm sticky-top">
     <div class="container">
         <a class="navbar-brand text-white fw-italic" routerLink="">
@@ -46,7 +47,7 @@
                          data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                         {{ userName }}
                     </a>
-                    <div class="dropdown-menu bg-primary dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <div class="dropdown-menu bg-primary dropdown-menu-end col-3 col-sm-2" aria-labelledby="navbarDropdown">
                         <a id="logout" class="dropdown-item bg-primary text-white" (click)="logout()" routerLink="">
                             Logout
                         </a>

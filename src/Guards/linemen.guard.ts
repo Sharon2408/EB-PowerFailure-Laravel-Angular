@@ -1,20 +1,5 @@
-import { CanActivateFn,Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
-import { inject } from '@angular/core';
-export const linemenGuardGuard: CanActivateFn = (route, state) => {
-  const token = localStorage.getItem('token')
-  const alertservice = inject(MessageService)
+import { CanActivateFn } from '@angular/router';
 
-  if (token) {
-    const decryptToken = token.split('.')[1];
-      const decode = JSON.parse(atob(decryptToken));
-      if(token && decode.role_id == 3){
-        return true;
-      }
-    
-  }
-  else{
-  return false;
-}
-return false
+export const linemenGuard: CanActivateFn = (route, state) => {
+  return true;
 };

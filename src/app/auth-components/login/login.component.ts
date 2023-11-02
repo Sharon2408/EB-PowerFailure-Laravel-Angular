@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MyErrorStateMatcher } from 'src/shared/ErrorMatcher';
 import { RegistrationService } from 'src/Services/registration.service';
+import { BehaviorSubject, Observable, Subject, from } from 'rxjs';
 
 
 @Component({
@@ -33,20 +34,13 @@ export class LoginComponent {
       password: this.password,
       loginType:this.loginType
     });
+
+
   }
   matcher = new MyErrorStateMatcher();
 
 
   onSubmit() {
-    // const submit = this.registeration.login(this.loginForm.value);
-    // if (submit) {
-    //   setTimeout(() => {
-    //       this.registeration.changeAuthStatus(true);
-    //     }, 1000);
-
-    //     return submit;
-    //   }
-    //   return false;
     return this.registeration.login(this.loginForm.value);
   }
 

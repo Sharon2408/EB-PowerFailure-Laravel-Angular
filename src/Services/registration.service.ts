@@ -10,167 +10,109 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class RegistrationService implements OnInit{
+export class RegistrationService {
 
   constructor(private http: HttpClient, private alert: MessageService, private router: Router) { }
+  // Api Base Url
   baseUrl = environment.baseUrl;
-  user_name!:string;
 
+  user_name!: string;
+  userId!: number;
+  consumerId!: string;
+  roleId!: number;
+  token: string | null = localStorage.getItem('token')
+
+  // To get the current logged in status to hide the Navitems in the Navbar
   public islogged = new BehaviorSubject<boolean>(this.get())
   authStatus = this.islogged.asObservable();
+
+  // To change the auth status when the user log's out
   changeAuthStatus(value: boolean) {
     this.islogged.next(value);
   }
-
-  ngOnInit(): void {
-   
-  }
-
-
+// function to register users
   signUp(form: Registration) {
-
     return this.http.post<Registration[]>(`${this.baseUrl}/user-register`, form).subscribe(
       {
-        next: () => {
+        next: (res) => {
           this.alert.add({
             key: 'tc',
             severity: 'success',
             summary: 'User Created Successfully',
           });
-          setTimeout(()=>{
-            this.router.navigate(['/'])
-          },1300)
+          console.log(res)
+          this.router.navigate(['/'])
         },
-        error: (error) => {
-
-          if (error.status === 422) {
-            console.log(error)
-            this.alert.add({
-              key: 'tc',
-              severity: 'error',
-              summary: 'Email exists',
-              detail: 'Looks like you have already registered',
-            });
-
-            setTimeout(() => {
-              this.router.navigate(['login'])
-            }, 1300)
-          }
-          else {
-            console.log(error)
-            this.alert.add({
-              key: 'tc',
-              severity: 'error',
-              summary: 'Server error',
-              detail: 'please try again later',
-            });
-          }
-        }
       }
     );
-
   }
 
+// To handle Login of Users,Admin and Lineman
   login(form: Registration) {
-
-   if(form.loginType === 'user'){
-    return this.http.post<Login>(`${this.baseUrl}/user-login`, form).subscribe(
-      {
-
-        next: (res) => {
-          this.set(res.authorisation);
-          this.get();
-          this.changeAuthStatus(true)
-          this.alert.add({
-            key: 'tc',
-            severity: 'success',
-            summary: 'Welcome'+' '+this.user_name,
-          });
-          setTimeout(()=>{
-            this.router.navigate(['']);
-          },1000)
-        },
-        error: (error) => {
-          if (error.status === 500) {
+    if (form.loginType === 'user') {
+      return this.http.post<Login>(`${this.baseUrl}/user-login`, form).subscribe(
+        {
+          next: (res) => {
+            this.set(res.authorisation);
+            this.get();
+            this.changeAuthStatus(true)
             this.alert.add({
               key: 'tc',
-              severity: 'error',
-              summary: 'Invalid Credentials',
-              detail: 'email or password does not match',
+              severity: 'success',
+              summary: 'Welcome' + ' ' + this.user_name,
             });
-          }
-          else {
-            console.log(error)
-            this.alert.add({
-              key: 'tc',
-              severity: 'error',
-              summary: 'Server error',
-              detail: 'please try again later',
-            });
-          }
+            if (form.loginType === 'user') {
+              this.router.navigate(['']);
+            } else {
+              this.router.navigate(['admin-view-complaints']);
+            }
+          },
         }
-      }
-    );
-   }
-
-   else if(form.loginType === 'lineman'){
-    return this.http.post<Login>(`${this.baseUrl}/lineman-login`, form).subscribe(
-      {
-
-        next: (res) => {
-          this.router.navigate(['/']);
-          this.set(res.authorisation);
-          this.get();
-          this.changeAuthStatus(true)
-          this.alert.add({
-            key: 'tc',
-            severity: 'success',
-            summary: 'Welcome'+' '+this.user_name,
-          });
-          setTimeout(()=>{
-            this.router.navigate(['/']);
-          },1000)
-        },
-        error: (error) => {
-          console.log(error)
-          if (error.status === 500) {
+      );
+    }
+    else if (form.loginType === 'lineman') {
+      return this.http.post<Login>(`${this.baseUrl}/lineman-login`, form).subscribe(
+        {
+          next: (res) => {
+            this.set(res.authorisation);
+            this.get();
+            this.changeAuthStatus(true)
             this.alert.add({
               key: 'tc',
-              severity: 'error',
-              summary: 'Invalid Credentials',
-              detail: 'email or password does not match',
+              severity: 'success',
+              summary: 'Welcome' + ' ' + this.user_name,
             });
-          }
-          else {
-            console.log(error)
-            this.alert.add({
-              key: 'tc',
-              severity: 'error',
-              summary: 'Server error',
-              detail: 'please try again later',
-            });
-          }
+            this.router.navigate(['lineman-view-task']);
+          },
         }
-      }
-    );
-   }
-   return false;
-  }
-  set(token: Authorisation) {
-
-    localStorage.setItem('token', token.token);
-  }
-  get() {
-    const token = localStorage.getItem('token');
-    if (token) {
-        const decryptToken = token.split('.')[1];
-        const decode = JSON.parse(atob(decryptToken));
-        if (decode) {
-          this.user_name = decode.name;
-        }
-        return true
+      );
     }
     return false;
   }
-
+// To set the Access token
+  set(token: Authorisation) {
+    localStorage.setItem('token', token.token);
+  }
+// Function to get the access token
+  get() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decryptToken = token.split('.')[1];
+      const decode = JSON.parse(atob(decryptToken));
+      if (decode) {
+        this.user_name = decode.name;
+        this.roleId = decode.role_id;
+        this.userId = parseInt(decode.sub);
+        this.consumerId = decode.consumer_id
+      }
+      return true
+    }
+    return false;
+  }
+// Logout function to clear the access token
+  logout(){
+    localStorage.clear();
+    this.changeAuthStatus(false);
+    this.router.navigate(['login']);
+  }
 }
