@@ -85,7 +85,7 @@ export class SignupComponent implements OnInit {
       '^[0-9]{2}$'
     ),]);
 
-    this.complaint.getDistrict().subscribe((response) => {
+    this.complaint.getPlace('District').subscribe((response) => {
       this.districts = response;
     })
 
@@ -112,7 +112,7 @@ export class SignupComponent implements OnInit {
 
   getZone(code: string) {
     if (this.selectedDistrict) {
-      this.complaint.getZone().subscribe((response) => {
+      this.complaint.getPlace('Zone').subscribe((response) => {
         this.zones = response;
         this.districtCode = code;
       })
@@ -124,7 +124,7 @@ export class SignupComponent implements OnInit {
 
   getArea(code: string) {
     if (this.selectedZone) {
-      this.complaint.getArea().subscribe((response) => {
+      this.complaint.getPlace('Area').subscribe((response) => {
         this.areas = response;
         this.zoneCode = code;
       })
